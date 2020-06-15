@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+<meta charset="UTF-8">
+<title>Patterns</title>
+<link rel="stylesheet" href="./style.css">
+
+</head>
+<body>
+
+<h1>Singleton</h1>
+<h2>Можем получит имя (man.getName) но не приватную информацию</h2>
+<button id="singleton" class="button"> Получить имя </button>
+<script>
+const man = (function(){
+  const manPrivateInformation = 'Super private'
+
+  const name = "Molodoy i krasiviy"
+
+  const getName = () => name
+
+  return {
+      getName
+  }
+}())
+
+singleton.onclick = function(){
+  console.log(man.getName())
+}
+</script>
+
+<h1>Abstract factory</h1>
+<h2 class="h2">Введи колличество пассажиров <input class="inputt" id="countpas" type="text" value="0"><br></h2>
+<button id="factorystart" class="button"> Начать посадку </button>
+<script>
+class Bus {
+   constructor(drive,passagers){
+     this.drive = drive
+     this.passagers = passagers
+   }
+  
+   getdrive(){
+      return this.drive
+    }
+    getPassagers(){
+      return this.passagers
+    }
+    getDescription() {
+        console.log('BEEEP BEEEP I am Bus')
+    }
+}
+class Taxi {
+
+  constructor(drive,passagers){
+     this.drive = drive
+     this.passagers = passagers
+   }
+    getdrive(){
+      console.log(this.drive)
+      return this.drive
+      
+    }
+    getPassagers(){
+      console.log(this.passagers)
+      return this.passagers
+    }
+    getDescription() {
+        console.log('BEEEEEP BEEEEP DEVUHKI KRASAVICI POEHALI')
+    }
+}
+class TaxiDriver {
+  onboard(){
+      Machine.drive -= 1
+    }
+    getDescription() {
+        console.log('ZA 100 DO CENTRA ')
+    }
+    getStartROAR(){
+      console.log('NU VSE POEHALI')
+    }
+}
+class BusDriver {
+    onboard() {
+      Machine.drive -= 1
+    }
+    getDescription() {
+        console.log('ZAHODIM NE TOLKAEMSYA PROEZD VSE OPLACHIVAEM YA ZAYCEV NE POVEZU')
+    }
+    getStartROAR(){
+      console.log('NU VSE POEHALI')
+    }
+}
+class Passager {
+  onboarding() {
+    Machine.passagers -=1
+  }
+  getDescription() {
+    console.log('Vot vam za proezd')
+  }
+}
+// Автобусна фабрика возвращает автобус и водителя
+class BusFactory {
+    makeMachine() {
+        return new Bus(1,30)
+    }
+
+    makeDriver() {
+        return new BusDriver()
+    }
+}
+// Фабрика такси возвращает машину и водителям
+class TaxiFactory{
+  makeMachine() {
+        return new Taxi(1,4)
+    }
+
+    makeDriver() {
+        return new TaxiDriver()
+    }
+}
+factorystart.onclick = function(){
+  buscounter = 0
+  buspas = 0 
+  taxicounter = 0
+  taxipas = 0 
+  console.log("Начата погрузка пассажиров")
+  countpassager = document.getElementById("countpas").value;//определяем колличество пассажиров
+  BusFact = new BusFactory()
+  TaxiFact = new TaxiFactory()
+  while (countpassager > 0){
+    if(countpassager >=30 ){
+      Machine = BusFact.makeMachine()
+      Machine.getDescription()  
+      Driver = BusFact.makeDriver()
+      Driver.onboard()
+      Driver.getDescription()
+      while (Machine.passagers != 0 && countpassager !=0){
+        Pas = new Passager()
+        Pas.onboarding()
+        Pas.getDescription()
+        countpassager--
+      }
+      Driver.getStartROAR()
+      buscounter++
+      
+    }
+    else{
+      Machine = TaxiFact.makeMachine()
+      Machine.getDescription()
+      Driver = TaxiFact.makeDriver()
+      Driver.getDescription()
+      while (Machine.passagers != 0 && countpassager !=0){
+        Pas = new Passager()
+        Pas.onboarding()
+        Pas.getDescription()
+        countpassager-- 
+      }
+      taxicounter++  
+    }
+  }
+  console.log("Nu vot i vse ")
+  console.log("taxi ==" , taxicounter)
+  console.log("bus == " , buscounter)
+}
+</script>
+
+<h1>Builder</h1>
+<button id="builderstart" class="button"> Начать работу </button>
+<button id="builderBus" class="button"> Призвать автобус </button>
+<button id="builderTaxi" class="button"> Призвать такси </button>
+<script>
+class superBus{
+  constructor(builder){
+    this.num = builder.num
+    this.superdriver = builder.superdriver || false
+    this.people = builder.people 
+    this.child = builder.child 
+    this.disabled = builder.disabled 
+  }
+}
+class superTaxi{
+  constructor(builder){
+    this.num = builder.num
+    this.superdriver = builder.superdriver || false
+    this.people = builder.people 
+    this.child = builder.child 
+    this.chair = builder.chair 
+  }
+}
+class BuilderBus{
+  constructor(num) {
+        this.num = num
+    }
+
+    addSuperdriver() {
+        this.superdriver = true
+        console.log("Voditel nahelsiya")
+        return this
+    }
+    getmaxpass(){
+      let maxpas = 30;
+      return maxpas
+     }
+    addPeople(count) {
+        this.people = count
+        for(let i = 0 ;i<count;i++)
+        console.log("Зашел и оплатил 25р")
+        return this
+    }
+
+    addChild(count) {
+        this.child = count
+        for(let i = 0 ;i<count;i++)
+        console.log("Зашел и оплатил 15р")
+        return this
+    }
+
+    addDisabled(count) {
+        this.disabled = count
+        for(let i = 0 ;i<count;i++)
+        console.log("Зашел и не оплатил тк льготник")
+        return this
+    }
+
+    build() {
+      console.log("Автобус готов и он уехал")
+      return new superBus(this)
+        
+    }
+}
+class BuilderTaxi{
+  constructor(num) {
+        this.num = num
+    }
+
+    addSuperdriver() {
+        this.superdriver = true
+        console.log("Voditel nahelsiya")
+        return this
+    }
+    getmaxpass(){
+      let maxpas = 4;
+      return maxpas
+     }
+
+    addPeople(count) {
+        this.people = count
+        for(let i = 0 ;i<count;i++)
+        console.log("SHEF ZA 100 do centra poedem?")
+        return this
+    }
+
+    addChild(count) {
+        this.child = count
+        for(let i = 0 ;i<count;i++)
+        console.log("NE HOCHU V KRESLO")
+        return this
+    }
+
+    addChair(count) {
+        this.chair = count
+        for(let i = 0 ;i<count;i++)
+        console.log("SEYCHAS USTANOVIM")
+        return this
+    }
+
+    build() {
+        console.log("Такси уехало")
+        return new superTaxi(this)
+    }
+}
+builderstart.onclick = function(){
+  builderBus.onclick = function(){
+    randnum = Math.floor(Math.random() * 10)
+    bus = (new BuilderBus(randnum))
+      .addSuperdriver()
+    maxpeople = bus.getmaxpass()
+    console.log(maxpeople)
+    var people = prompt('Сколько взрослых пассажиров  <' + maxpeople , 30);
+    var disabled= prompt('Сколько из них льготники  <' + Number(people) , 0);
+    var forchild = maxpeople-Number(people)
+    var child= prompt('Сколько детей  <'  + forchild , 0);
+    bus.addPeople(Number(people)-Number(disabled))
+    bus.addDisabled(Number(disabled))
+    bus.addChild(Number(child))
+    ride = confirm("Поехали ?")
+    if (Number(child)+Number(people) <= maxpeople && ride == true){
+      readybus = bus.build()}
+      else{
+        console.log("а что не едем ???? ? ? ? ? ")
+      }
+    }
+    builderTaxi.onclick = function(){
+      randnum = Math.floor(Math.random() * 10)
+      taxi = (new BuilderTaxi(randnum))
+      .addSuperdriver()
+      maxpeople = taxi.getmaxpass()
+      console.log(maxpeople)
+      var people = prompt('Сколько взрослых пассажиров  <' + maxpeople , 3);
+      var forchild = maxpeople-Number(people)
+      var child= prompt('Сколько детей  <'  + forchild , 0);
+      taxi.addPeople(Number(people))
+      taxi.addChild(Number(child))
+      taxi.addChair(Number(child))
+      ride = confirm("Поехали ?")
+      if (ride == true){
+        readytaxi = taxi.build()
+        console.log("OOOOOOOOOOOOOOOOOOOOOOOOOOOO ZELENOGLAZOE TAXI")
+      }else{
+        console.log("a cho ne edem ALEEEEEEEEEEEEEEEEEE")
+      }
+    }
+
+  
+}
+</script>
+
+<h1>Composite</h1>
+<button id="compositestart" class="button"> Начать посадку </button>
+<script>
+ 
+  class Pilot {
+    constructor(name){
+      this.name = name
+     
+    }
+    setName(name){
+      this.name = name
+    }
+    getName(){
+      return this.name
+    }
+  }
+  
+  class Stuard {
+    constructor(name){
+      this.name = name
+     
+    }
+    setName(name){
+      this.name = name
+    }
+    getName(){
+      return this.name
+    }
+  }
+  
+  class FlyPassager {
+    constructor(name,classif,baggage){
+      this.name = name
+      this.classif = classif
+      this.baggage = baggage
+    }
+    setName(name){
+      this.name = name
+    }
+    getName(){
+      return this.name
+    }
+    setClassif(classif){
+      this.classif = classif
+    }
+    getClassif(){
+     return this.classif
+    }
+    setBaggage(baggage){
+      this.baggage = baggage
+    }
+    getBaggage(){
+      return this.baggage
+    }
+    setinPlane(){
+      if (this.classif==0){
+        fc.maxpas--
+        fc.addEmployee(flypas)
+      }
+      if (this.classif==1){
+        bc.maxpas--
+        bc.addEmployee(flypas)
+      }
+      if (this.classif==2){
+        ec.maxpas--
+        ec.addEmployee(flypas)
+      }
+    }
+    checkbaggage(classif,baggage){
+      this.classif = classif
+      this.baggage = baggage
+
+      if (this.classif==0){
+        console.log('OLO YA PERVIY CLASS KAKAYA PROVERKA')
+      }
+      if (this.classif==1 && baggage > 35){
+       var pereves = baggage - 35
+       console.log('LYYY PEREVES PREDETSYA EGO ZAREGESTRIROVAT S PEREVESOM v : ',pereves)
+       plane.pereves+=pereves
+
+      }
+      if (this.classif==2 && baggage > 20 ){
+        Ecoclass.maxpas--
+        flypas.setBaggage(0)
+        console.log('ZOCHEM YA VZYAL TAK MNOGOVESHEY (bagage poteryan)')
+        plane.leavebagagge+=1
+      }
+    }    
+  }
+  
+  class Plane{
+    pereves = 0
+    leavebagagge = 0  
+  }
+
+  class Firstclass{
+    constructor(){
+      this.employees = []
+    }
+    maxpas = 10
+    addEmployee(employee) {
+        this.employees.push(employee)
+    }
+    
+    getNetBaggage() {
+        let NetBaggage = 0
+        this.employees.forEach(employee => {
+            NetBaggage += employee.getBaggage()
+        }) 
+        return NetBaggage
+    }
+  }
+  
+  class Bisnesclass{
+    constructor(){
+      this.employees = []
+    }
+    maxpas = 20
+    addEmployee(employee) {
+        this.employees.push(employee)
+    }
+    getNetBaggage() {
+        let NetBaggage = 0
+        this.employees.forEach(employee => {
+            NetBaggage += employee.getBaggage()
+        }) 
+        return NetBaggage
+    }
+  }
+  
+  class Ecoclass{
+    constructor(){
+      this.employees = []
+    }
+    maxpas = 150
+    addEmployee(employee) {
+        this.employees.push(employee)
+    }
+    getNetBaggage() {
+        let NetBaggage = 0
+        this.employees.forEach(employee => {
+            NetBaggage += employee.getBaggage()
+        }) 
+        return NetBaggage
+    } 
+  }
+ 
+  compositestart.onclick = function(){
+    plane = new Plane()
+    fc = new Firstclass()
+    bc = new Bisnesclass()
+    ec = new Ecoclass()
+    pilotesa1 = new Pilot('Anna')
+    pilotesa2 = new Pilot('Anita')
+    stuardesa1 = new Stuard('Albina')
+    stuardesa2 = new Stuard('Alina')
+    stuardesa3 = new Stuard('Alisa')
+    stuardesa4 = new Stuard('Alla')
+    stuardesa5 = new Stuard('Aleftina')
+    stuardesa6 = new Stuard('Alenka')
+    var arr = new Array(0,1,2)
+    var i=0 
+    var g = 0
+    while(fc.maxpas > 0 || bc.maxpas > 0 || ec.maxpas > 0){
+   /*
+    if (fc.maxpas == 0){
+      var index = arr.indexof(0);
+      if (index > -1) {
+        arr.splice(index, 1);
+      }
+    }
+    if (bc.maxpas == 0){
+      var index = arr.indexof(1);
+      if (index > -1) {
+        arr.splice(index, 1);
+      }
+    }
+    if (ec.maxpas == 0){
+      var index = array.indexof(2);
+      if (index > -1) {
+        arr.splice(index, 1);
+      }
+    }
+    */
+    randclass = Math.floor(Math.random() * 3)
+    randbaggage = Math.floor(Math.random() * 65)
+    
+    flypas = new FlyPassager('Oleg',randclass,randbaggage)
+    console.log(flypas.getClassif())
+    console.log(flypas.getBaggage())
+    
+   
+    if(fc.maxpas > 0 && randclass ==0 ){
+      flypas.checkbaggage(randclass,randbaggage)
+      flypas.setinPlane()
+    }
+    if(bc.maxpas > 0 && randclass == 1){
+      flypas.checkbaggage(randclass,randbaggage)
+      flypas.setinPlane()
+    }
+    if(ec.maxpas > 0 && randclass == 2){
+      flypas.checkbaggage(randclass,randbaggage)
+      flypas.setinPlane()
+    }
+    g+=1
+   
+    }
+    console.log('proxodov',g)
+  }
+</script>
+
+<h1>Proxy</h1>
+<h2>Не понял задание в лабнике , привел другой пример реализации Proxy</h2>
+<button id="proxystart" class="button"> Начать работу</button>
+<button id="proxyopen" class="button"> открыть дверь</button>
+<button id="proxyclose" class="button"> Закрыть дверь</button>
+<script>
+  class Door {
+    open() {
+        console.log('Opa otkrilas` dver` ')
+    }
+
+    close() {
+        console.log('Opa zakrilas` dver` ')
+    }
+}
+
+class Security {
+    constructor(door) {
+        this.door = door
+    }
+
+    open(password) {
+        if (this.authenticate(password)) {
+            this.door.open()
+            document.getElementById('proxyclose').hidden = false;
+            document.getElementById('proxyopen').hidden = true;
+        } else {
+        	console.log('Parol` neverniy')
+        }
+    }
+
+    authenticate(password) {
+        return password === 'dver'
+    }
+
+    close() {
+        this.door.close()
+        document.getElementById('proxyclose').hidden = true;
+        document.getElementById('proxyopen').hidden = false;
+    }
+}
+proxystart.onclick = function(){
+  door = new Security(new Door())
+  document.getElementById('proxyclose').hidden = true;
+  proxyopen.onclick = function(){
+    var password = prompt('Введите пароль от двери',111);
+    door.open(password)
+  }
+  proxyclose.onclick = function(){
+    door.close()
+  }
+   
+}
+</script>
+
+<h1> Interpretator</h1>
+<h2 class="h2">Введи римские цифры для итерации <input class="inputt" id="interpretator" type="text" value="MCMXXVIII"><br></h2>
+<button id="interpretatorstart" class="button"> Интерпритировать</button>
+<script>
+interpretatorstart.onclick = function(){
+  var Context = function (input) {
+    this.input = input;
+    this.output = 0;
+};
+
+Context.prototype = {
+    startsWith : function (str) {
+        return this.input.substr(0, str.length) === str;
+    }
+};
+
+var Expression = function (name, one, four, five, nine, multiplier) {
+    this.name = name;
+    this.one = one;
+    this.four = four;
+    this.five = five;
+    this.nine = nine;
+    this.multiplier = multiplier;
+};
+
+Expression.prototype = {
+    interpret: function (context) {
+        if (context.input.length == 0) {
+            return;
+        }
+        else if (context.startsWith(this.nine)) {
+            context.output += (9 * this.multiplier);
+            context.input = context.input.substr(2);
+        }
+        else if (context.startsWith(this.four)) {
+            context.output += (4 * this.multiplier);
+            context.input = context.input.substr(2);
+        }
+        else if (context.startsWith(this.five)) {
+            context.output += (5 * this.multiplier);
+            context.input = context.input.substr(1);
+        }
+        while (context.startsWith(this.one)) {
+            context.output += (1 * this.multiplier);
+            context.input = context.input.substr(1);
+        }
+    }
+};
+
+var Application = function () {
+ this.run = function () {
+  var roman =  document.getElementById("interpretator").value;
+  var context = new Context(roman);
+  var tree = [];
+  
+  tree.push(new Expression("thousand", "M", " " , " ", " " , 1000));
+  tree.push(new Expression("hundred",  "C", "CD", "D", "CM", 100));
+  tree.push(new Expression("ten",      "X", "XL", "L", "XC", 10));
+  tree.push(new Expression("one",      "I", "IV", "V", "IX", 1));
+  
+  for (var i = 0, len = tree.length; i < len; i++) {
+   tree[i].interpret(context);
+  }
+  
+  console.log(roman + " = " + context.output);
+ };
+};
+
+var app = new Application();
+app.run();
+}
+</script>
+
+<h1>Observer</h1>
+<button id="addsubs" class="button"> добавит подписчика </button>
+<button id="adddata" class="button"> добавить инфомацию </button>
+<button id="checkdata" class="button"> проверить информацию </button>
+<button id="addconcretedata" class="button"> добавить конкретную информацию </button>
+<script>
+  class EventObserver {
+  constructor () {
+    this.observers = []
+  }
+
+  subscribe (fn,data) {
+    var arr = [fn,data]
+    this.observers.push(arr)
+    console.log('subscribers add', data)
+  }
+
+  checkdata(){
+    var len = observer.observers.length
+    var i = 0
+    var minuslico = 0
+    var minusliconame = []
+    while(i<len){
+      var subs = observer.observers[i]
+      if(subs[1] < 50){
+          minuslico+=1
+          minusliconame.push(subs[0])
+      } 
+      i+=1
+    } 
+    console.log(len)
+    console.log(minuslico)
+    console.log(minusliconame)
+  }
+  unsubscribe (fn) {
+    this.observers = this.observers.filter(subscriber => subscriber !== fn)
+  }
+
+  broadcast () {
+    var len = observer.observers.length
+    var i = 0
+    while(i<len){
+      var randdata = Math.floor(Math.random() * 100)
+      var subs = observer.observers[i]
+      subs[1] = randdata
+      i+=1
+      console.log(subs)
+    } 
+    alert(len)
+  }
+  
+  concretedata(name,data){
+    var len = observer.observers.length
+    var i = 0 
+    while(i<len){
+      var subs = observer.observers[i]
+      if(subs[0]== name){
+        subs[1]=data
+        console.log(subs)
+        break
+      }
+     i+=1
+    }
+  }
+}
+const observer = new EventObserver()
+
+addsubs.onclick = function(){
+var name = prompt("Имя подписчика")
+var data = 1
+observer.subscribe(name,data)
+}
+
+adddata.onclick = function(){
+observer.broadcast()
+}
+
+checkdata.onclick = function(){
+  observer.checkdata()
+}
+addconcretedata.onclick = function(){
+  var name = prompt("Имя подписчика")
+  var data = prompt("введите число")
+  observer.concretedata(name,data)
+}
+</script>
+
+<h1>MVVM</h1>
+
+ИМЯ: <input type="text" name = "firstname" id="firstname"> <input type="text" name = "firstname" id="firstname_label"><br>
+ФАМИЛИЯ:  <input type="text" name = "lastname" id="lastname"> <input type="text" name = "lastname" id="lastname_label"><br>
+<script>
+var Model = (function(){
+
+var model = function(){
+  var _model = {
+    'firstname': "ANdrew",
+    'lastname': "BALASHOV"
+  };
+
+  var listeners = [];
+
+  this.subscribe = function(listener){
+    listeners.push(listener);
+  };
+
+  this.notify = function(attribute_name, newValue){
+    for(var i = 0; i < listeners.length; i++){
+      listeners[i](attribute_name, newValue);
+    }
+  };
+
+  this.getCurrentValue = function(attribute_name){
+    console.log(_model[attribute_name]);
+    return _model[attribute_name];
+  };
+
+  this.setCurrentValue = function(attribute_name, value){
+    _model[attribute_name] = value;
+    this.notify(attribute_name, value);
+  };
+};
+
+return new model();
+})();
+
+
+var ViewModel = (function(){
+
+var viewModel = function(model){
+  this.bind= function(view_element, model_element){
+    view_element.value = model.getCurrentValue(model_element);
+    model.subscribe(function(attribute_name, newValue){
+      document.getElementsByName(attribute_name).forEach(function(elem){
+        elem.value = newValue;
+      });
+    });
+    view_element.addEventListener('input', function(){
+      model.setCurrentValue(view_element.name, view_element.value);
+    });
+  }
+}
+
+return viewModel;
+})();
+
+var firstname_input = document.getElementById('firstname');
+var lastname_input = document.getElementById('lastname');
+
+var firstname_label = document.getElementById('firstname_label');
+var lastname_label = document.getElementById('lastname_label');
+
+var vm = new ViewModel(Model);
+vm.bind(firstname_input, 'firstname');
+vm.bind(lastname_input, 'lastname');
+
+vm.bind(firstname_label, 'firstname');
+vm.bind(lastname_label, 'lastname');
+
+</script>
+
+</body>
